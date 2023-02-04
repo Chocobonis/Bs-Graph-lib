@@ -1,0 +1,107 @@
+
+#define PI 3.14159
+#define PI2 PI/2
+#define PI3 3*PI/2 
+#define DR 0.174533
+
+float dist(float ax, float ay, float bx, float by, float ang){
+return (sqrt((bx-ax)*(bx-ax) + (by-ay)*(by-ay)));
+}
+
+void Cast3DMap(Bs_cmd_graph display, int map[16][16],float px, float py, float pdx, float pdy,float pa){
+	/*px -> player x | py -> player y | pa -> player angle*/
+	int r,mx,my,mp,dof;
+	float rx,ry,ra,xo,yo,disT;
+	ra=pa-DR*30;
+	if(ra<0){
+		ra+=2*PI;
+	}
+	if(ra>2*PI){
+		ra-=2*PI;
+	}
+	for(r=0;r<display.vsx-1;r++){ // numero de rayos a trazar
+		dof = 0;
+		float disH = 100000, hx=px, hy=py;
+		float aTan=-1/tan(ra);
+		if(ra>PI){
+			ry = (((int)py>>6)<<6)-0.0001;
+			rx = (py-ry)*aTan+px;
+			yo = -64;
+			xo = -yo*aTan;
+		}
+		if(ra<PI){
+			ry = (((int)py>>6)<<6)+64;
+			rx = (py-ry)*aTan+px;
+			yo =  64;
+			xo = -yo*aTan;
+		}
+		if(ra==0||ra==PI){
+			rx=px; ry=py;
+		}
+		while(dof<8){
+			mx=(int)(rx)>>6;
+			my=(int)(ry)>>6;
+			if(map[mx][my] == 1){
+				hx=px; hy=py;
+				disH = dist(px,py,hx,hy,ra);
+				dof=8;
+			}else{
+				rx += xo;
+				ry += yo;
+				dof+=1;
+			}
+		}
+		dof = 0;
+		float disV = 100000, vx=px, vy=py;
+		float aTan2=-tan(ra);
+		if(ra>PI2 && ra<PI3){
+			rx = (((int)px>>6)<<6)-0.0001;
+			ry = (px-rx)*aTan2+py;
+			xo = -64;
+			yo = -xo*aTan2;
+		}
+		if(ra<PI2 || ra>PI3){
+			rx = (((int)px>>6)<<6)+64;
+			ry = (px-rx)*aTan2+py;
+			xo =  64;
+			yo = -xo*aTan2;
+		}
+		if(ra==0||ra==PI){
+			rx=px; ry=py;
+		}
+		while(dof<4){
+			mx=(int)(rx)>>6;
+			my=(int)(ry)>>6;
+			if(map[mx][my] == 1){
+				vx=px; vy=py;
+				disH = dist(px,py,vx,vy,ra);
+				dof=4;
+			}else{
+				rx += xo;
+				ry += yo;
+				dof+=1;
+			}
+		}
+		if(disV<disH){
+			rx=vx; ry = vy; disT = disV;
+		}
+		if(disV>disH){
+			rx=hx; ry = hy; disT = disH;
+		}
+		// drawing wall
+		int lineH = (16*display.vsx-1)/disT;
+		if(lineH > display.vsy-1){
+		lineH = display.vsy;
+		}
+		int lineO = 160-lineH/2;
+		display.Bs_draw_line(r,lineO,r,lineH+lineO,33);
+		// next i
+		ra+=DR;
+		if(ra<0){
+			ra+=2*PI;
+		}
+		if(ra>2*PI){
+			ra-=2*PI;
+		}
+	}
+}
