@@ -28,7 +28,7 @@ Bs_mouse_pointer *mouse = new Bs_mouse_pointer(35,11,97);
  	//char key = ' ';
  	while(1){
  	screen->Bs_cmd_clear();
- 	 screen->Bs_draw_text(1,1,"3D ASCII ENGINE BY: BONIIKWIIDZU (c) 2020");
+ 	 screen->Bs_draw_text(1,1,"3D ASCII ENGINE BY: CHOCOBONIS (c) 2020");
  	 
  	//screen->Bs_draw_line(0,12,69,12,32);  // draw floor
  	std::cout<<"BUTTON PRESSED TEST: "<<pressed<<std::endl;
