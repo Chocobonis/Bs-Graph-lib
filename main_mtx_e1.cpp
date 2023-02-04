@@ -28,7 +28,7 @@ Bs_translatef_shp(0,0,12);
   screen->Bs_draw_line( 0,0, 0,99,35);
   screen->Bs_draw_line(99,0,99,99,35);
  
-  screen->Bs_draw_text(1,1,"3D ASCII ENGINE BY: BONIIKWIIDZU (c) 2020");
+  screen->Bs_draw_text(1,1,"3D ASCII ENGINE BY: CHOCOBONIS (c) 2020");
 
   screen->Bs_cmd_draw();
   
